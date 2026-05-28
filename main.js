@@ -19,7 +19,8 @@ function createCard(user) {
 
   container.insertAdjacentHTML("beforeend", cardHtml);
 }
-
+const usersPerPage = 10;
+let currentUserIndex = 0;
 const renderUsers = async () => {
   const container = document.getElementById("user-container");
   container.textContent = "Loading";
@@ -27,10 +28,28 @@ const renderUsers = async () => {
   const users = await getUsers();
   container.textContent = "";
 
-  users.forEach((user) => {
-    createCard(user);
-  });
+  for (let i = 0; i < usersPerPage; i++) {
+    createCard(users[currentUserIndex]);
+
+    currentUserIndex++;
+  }
 };
+
+const changePageData = (amount) => {
+  const backButton = document.getElementById("backButton");
+  const forwardButton = document.getElementById("forwardButton");
+  const currentDisplay = document.getElementById("currentPageIndex");
+  if (currentDisplay.textContent == 1 && amount < 0)
+    return console.log(currentDisplay.textContent, Math.sign(amount));
+  console.log(currentDisplay.textContent, Math.sign(amount));
+
+  currentUserIndex += amount;
+  currentDisplay.textContent = Number(currentDisplay.textContent) + amount;
+  backButton.textContent = Number(currentDisplay.textContent) - 1;
+  forwardButton.textContent = Number(currentDisplay.textContent) + 1;
+  renderUsers();
+};
+
 renderUsers();
 const input = document.querySelector("input");
 input.addEventListener("input", (e) => {
